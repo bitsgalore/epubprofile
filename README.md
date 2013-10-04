@@ -10,7 +10,7 @@ Note that is *not* a production-ready tool. I mainly wrote *epubprofile* with th
 - Demonstrate (and experiment with) the use of *Schematron* rules to assess *epub* publications against user-defined rules/policies. 
 
 ## Dependencies
-*Epubprofile* was tested with Python 2.7; Python 3 doesn't seem to work yet. You will also need *Java* 5 or more recent for running *epubcheck* and *Probatron4J* (this is based on *Probatron4J*'s documentation. Some tests indicate possible misbehaviour under *Java* 5;  *Java* 6 appears to work fine.) All other dependencies (*epubcheck*, *Probatron4J* are included with *epubprofile*. 
+*Epubprofile* was tested with Python 2.7; Python 3 doesn't seem to work yet. You will also need *Java* 5 or more recent for running *epubcheck* and *Probatron4J* (this is based on *Probatron4J*'s documentation. Some tests indicate possible misbehaviour under *Java* 5;  *Java* 6 appears to work fine.) All other dependencies (*epubcheck* and *Probatron4J* are included with *epubprofile*. 
 
 The *epubcheck* *JAR* and source can be found here:
 
