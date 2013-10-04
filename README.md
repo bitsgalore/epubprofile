@@ -40,7 +40,9 @@ Just unzip the contents of *jprofile_x.y.z_win32.zip* to any empty directory. Th
 ## Positional arguments
 
 **batchDir**: directory that contains *epub* files to be analysed  
+
 **outDir**: directory where all output is written
+
 **schema**: name of schema with Schematron rules against which the *epubcheck* output is validated 
 
 ## Schemas
