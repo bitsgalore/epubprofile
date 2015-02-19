@@ -33,6 +33,8 @@ import time
 import argparse
 import xml.etree.ElementTree as ET
 import subprocess as sub
+from lxml import isoschematron
+from lxml import etree
 
 
 def main_is_frozen():
@@ -132,14 +134,12 @@ def getConfiguration(configFile):
     # Get corresponding text values
     java=os.path.normpath(javaElement.text)
     epubcheckApp=addPath(appPath + "/epubcheck/","epubcheck-3.0.1.jar") # To config file!
-    probatronApp=addPath(appPath + "/probatron/","probatron.jar")
         
     # Check if all files exist, and exit if not
     checkFileExists(java)
     checkFileExists(epubcheckApp)
-    checkFileExists(probatronApp)
             
-    return(java,epubcheckApp,probatronApp)
+    return(java,epubcheckApp)
 
 
 def listProfiles(profilesDir):
@@ -214,6 +214,17 @@ def launchSubProcess(systemString):
     
     return exitStatus,outputAsString,errorsAsString
 
+def readAsLXMLElt(xmlFile):
+    # Parse XML file with lxml and return result as element object
+    # Not the same as Elementtree object!
+    
+    f = open(xmlFile, 'r')
+    # Note we're using lxml.etree here rather than elementtree (yes, it's confusing!)
+    resultAsLXMLElt = etree.parse(f)
+    f.close()
+    
+    return(resultAsLXMLElt)
+    
 def getFilesFromTree(rootDir, extensionString):
     # Walk down whole directory tree (including all subdirectories)
     # and return list of those files whose extension contains user defined string
@@ -284,14 +295,14 @@ def main():
     
     # HACK: Probatron exits with URL Exception if schema is a  standard (full) file path,
     # this makes it work (at least under Windows)
-    schema = "file:///" + schema
+    #schema = "file:///" + schema
                    
     # Get Java location from config file 
-    java,epubcheckApp,probatronApp=getConfiguration(configFile)
+    java,epubcheckApp=getConfiguration(configFile)
             
     # File names for temporary epubcheck and Probatron output files
     #nameEpubcheck="_epubcheck_temp_.xml"
-    nameProbatron="_probatron_temp_.xml"
+    #nameProbatron="_probatron_temp_.xml"
     
     # Set line separator for output/ log files to OS default
     lineSep=os.linesep
@@ -328,9 +339,6 @@ def main():
         ecOutString=""
         ptOutString=""
         
-        # Remove any previous instances of probatron output file
-        removeFile(nameProbatron)
-
         nameEpubcheck=constructFileName(myFile,outDir,"xml","_epubcheck")
         
         # Epubcheck command line
@@ -339,14 +347,15 @@ def main():
         try:
             ecExitStatus,ecStdOut,ecStdErr=launchSubProcess(ecSysString)
         
-            with open(nameProbatron, "w") as text_file:
+            with open(nameEpubcheck, "w") as text_file:
                 text_file.write(ptStdOut)
         except:
             status="fail"
             description="Error running Epubcheck"
             ecOutString +=description + lineSep
 
-         
+        ##### START REPLACE SCHEMATRON VALIDATION
+        
         # Construct Probatron command line according to:
         # %java% -jar %probatron% dpo_colour_00990_master_jp2.xml %schemaMaster% > resultMasterOK.xml
         
@@ -363,6 +372,8 @@ def main():
             status="fail"
             description="Error running Probatron"
             ptOutString +=description + lineSep
+        
+        ##### END REPLACE SCHEMATRON VALIDATION
         
         # Parse Probatron XML output and extract interesting bits
         try:

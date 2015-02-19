@@ -8,7 +8,7 @@ spaces (the Python os.path libs don't seem to like this!
 -->
 
 <!-- location of Java  -->
-<java>C:\Program Files (x86)\Java\jre7\bin\java.exe</java>
+<java>C:\Program Files (x86)\Java\jre1.8.0_31\bin\java.exe</java>
 
 
 </config>
